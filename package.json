@@ -1,0 +1,37 @@
+{
+  "name": "level-ordered",
+  "version": "1.0.0",
+  "description": "a wrapper for level database that keeps order",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eranbnn/level-ordered.git"
+  },
+  "keywords": [
+    "level",
+    "leveldb",
+    "database",
+    "wrapper",
+    "array",
+    "ordered",
+    "sorted",
+    "getLast",
+    "simple"
+  ],
+  "author": "Eran Bentziony",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eranbnn/level-ordered/issues"
+  },
+  "homepage": "https://github.com/eranbnn/level-ordered#readme",
+  "dependencies": {
+    "level": "^6.0.1",
+    "subleveldown": "^5.0.1"
+  },
+  "devDependencies": {
+    "jest": "^26.4.2"
+  }
+}
