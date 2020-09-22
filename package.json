@@ -1,6 +1,6 @@
 {
   "name": "level-ordered",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "a wrapper for level database that keeps order",
   "main": "index.js",
   "scripts": {

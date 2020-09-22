@@ -1,3 +1,4 @@
+const path = require('path');
 const level = require('level');
 const sub = require('subleveldown');
 
@@ -22,7 +23,7 @@ class Database {
             throw MISSING_INPUT;
         }
 
-        this._level = filePool[db] = filePool[db] || level(`./db/${db}`, JSON_ENCODING);
+        this._level = filePool[db] = filePool[db] || level(path.join(process.cwd(), 'db', db), JSON_ENCODING);
         this.db = sub(this._level, collection);
         return (async () => {
             await this.init();

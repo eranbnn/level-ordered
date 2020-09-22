@@ -2,6 +2,9 @@
 
 A wrapper for [`level`][level] that keeps inserted items ordered.
 
+[![npm](https://img.shields.io/npm/v/level-ordered.svg?label=&logo=npm)](https://www.npmjs.com/package/level-ordered)
+[![npm](https://img.shields.io/npm/dm/level-ordered.svg?label=dl)](https://www.npmjs.com/package/level-ordered)
+
 All items should be in JSON form.
 
 (Supports up to 899,999,999,999 item insertions per collection)
