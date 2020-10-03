@@ -12,7 +12,7 @@ All items should be in JSON form.
 ## Usage
 ```js 
 // create/access database
-const testDB = await new Database('dbName', 'collectionName');
+const testDB = await Database.access('dbName', 'collectionName');
 
 // insert items
 await testDB.insert({ val: 'one' }, { val: 'two' }, { val: 'three' });

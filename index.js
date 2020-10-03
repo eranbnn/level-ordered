@@ -18,20 +18,18 @@ class Database {
         }));
     }
 
-    constructor(db, collection) {
+    static async access(db, collection) {
         if (!db || !collection) {
-            throw MISSING_INPUT;
+          throw MISSING_INPUT;
         }
-
-        this._level = filePool[db] = filePool[db] || level(path.join(process.cwd(), 'db', db), JSON_ENCODING);
-        this.db = sub(this._level, collection);
-        return (async () => {
-            await this.init();
-            return this;
-        })();
+        const instance = new Database();
+        await instance._init(db, collection);
+        return instance;
     }
 
-    init() {
+    async _init(db, collection) {
+        this._level = filePool[db] = filePool[db] || level(path.join(process.cwd(), 'db', db), JSON_ENCODING);
+        this.db = sub(this._level, collection);
         return this.db.get('counter').then(value => (this.latestKey = +value)).catch((err) => {
             if (err.type === 'NotFoundError') {
                 return this._updateCounter(INITIAL);
@@ -42,6 +40,10 @@ class Database {
 
     _updateCounter(newCounter) {
         return this.db.put('counter', this.latestKey = newCounter);
+    }
+
+    _updateLastItem() {
+        return this.getAll().then(results => +results[results.length - 1]._id).then(this._updateCounter.bind(this));
     }
 
     getAll(filterFunc) {
@@ -72,12 +74,14 @@ class Database {
     }
 
     deleteKey(key) {
-        return this.db.del(key);
+        return this.db.del(key).then(result => +key === this.latestKey ? this._updateLastItem() : result);
     }
 
     async deleteBy(filterFunc) {
         const itemToDelete = await this.getAll(filterFunc);
-        return this.db.batch(itemToDelete.map(({ _id }) => ({ type: 'del', key: _id })));
+        const lastIDToDelete = itemToDelete[itemToDelete.length - 1]._id;
+        return this.db.batch(itemToDelete.map(({ _id }) => ({ type: 'del', key: _id })))
+            .then(result => +lastIDToDelete === this.latestKey ? this._updateLastItem() : result);
     }
 }
 

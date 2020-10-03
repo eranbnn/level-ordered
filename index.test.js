@@ -5,11 +5,11 @@ const collectionName = 'new';
 const items = ['one', 'two', 'three'].map(val => ({val}));
 describe(`Database '${dbName}'`, () => {
     it('should create and access db', async () => {
-        await new Database(dbName, collectionName);
+        await Database.access(dbName, collectionName);
     });
 
     it('should be able to access db again', async () => {
-        await new Database(dbName, collectionName);
+        await Database.access(dbName, collectionName);
     });
 
     it('should list active databases', () => {
@@ -17,20 +17,20 @@ describe(`Database '${dbName}'`, () => {
     });
 
     it('should insert items in order', async () => {
-        const testDB = await new Database(dbName, collectionName);
+        const testDB = await Database.access(dbName, collectionName);
         await testDB.insert(...items);
         const allItems = await testDB.getAll();
         expect(allItems.map(({val}) => val)).toEqual(items.map(({val}) => val));
     });
 
     it('should get last item', async () => {
-        const testDB = await new Database(dbName, collectionName);
+        const testDB = await Database.access(dbName, collectionName);
         const {val} = await testDB.getLastItem();
         expect(val).toEqual(items[items.length - 1].val);
     });
 
     it(`should update item: ${JSON.stringify(items[0])}`, async () => {
-        const testDB = await new Database(dbName, collectionName);
+        const testDB = await Database.access(dbName, collectionName);
         const filterFunc = ({val}) => val === items[0].val;
         const [{_id: keyOfItem}] = await testDB.getAll(filterFunc);
 
@@ -44,7 +44,7 @@ describe(`Database '${dbName}'`, () => {
 
     it(`should access an existing db and add an item`, async () => {
         await Database.closeAllDBs();
-        const testDB = await new Database(dbName, collectionName);
+        const testDB = await Database.access(dbName, collectionName);
 
         const newItem = {val: 'four'};
         await testDB.insert(newItem);
@@ -56,15 +56,21 @@ describe(`Database '${dbName}'`, () => {
     });
 
     it(`should delete item: ${JSON.stringify(items[1])}`, async () => {
-        const testDB = await new Database(dbName, collectionName);
+        const testDB = await Database.access(dbName, collectionName);
         const filterFunc = ({val}) => val === items[1].val;
         await testDB.deleteBy(filterFunc);
         expect(await testDB.getAll(filterFunc)).toHaveLength(0);
     });
 
+    it(`should delete last item and have a new last item`, async () => {
+        const testDB = await Database.access(dbName, collectionName);
+        await testDB.deleteKey(testDB.latestKey);
+        expect(await testDB.getLastItem()).toBeDefined();
+    });
+
     it('should keep different collections separate', async () => {
-        const testDB1 = await new Database(dbName, collectionName + 1);
-        const testDB2 = await new Database(dbName, collectionName + 2);
+        const testDB1 = await Database.access(dbName, collectionName + 1);
+        const testDB2 = await Database.access(dbName, collectionName + 2);
 
         await testDB1.insert(items[0]);
         await testDB2.insert(items[0]);
@@ -77,6 +83,6 @@ describe(`Database '${dbName}'`, () => {
     });
 
     afterAll(async () => {
-        (await new Database(dbName, collectionName))._level.clear();
+        (await Database.access(dbName, collectionName))._level.clear();
     });
 });

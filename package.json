@@ -1,6 +1,6 @@
 {
   "name": "level-ordered",
-  "version": "1.0.3",
+  "version": "2.0.1",
   "description": "a wrapper for level database that keeps order",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,8 @@
     "ordered",
     "sorted",
     "getLast",
-    "simple"
+    "simple",
+    "nodejs"
   ],
   "author": "Eran Bentziony",
   "license": "MIT",
