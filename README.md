@@ -31,11 +31,11 @@ await testDB.getAll(filterFunc) // []
 ```    
 ## API
 
-### `getAll(filterFunc)`
+### `getAll([filterFunc])`
 Returns a promise for all items (+ keys as `_id` fields), filtered by a function if provided, in an array form.
 
 ### `getKey(key)`
-Returns a promise for the item matching the key provided
+Returns a promise for the item matching the key provided.
 
 ### `getLastItem()`
 Returns a promise for the last inserted item.
@@ -44,12 +44,12 @@ Returns a promise for the last inserted item.
 Asynchronously inserts items provided into the database.
 
 ### `update(key, updateObj)`
-Asynchronously updates an item in the database with an object provided.
+Asynchronously updates an item in the database with the object provided.
 
 ### `deleteKey(key)`
-Asynchronously deletes an item according to key provided.
+Asynchronously deletes an item according to key.
 
-### `deleteBy(filterFunc)`
+### `deleteBy([filterFunc])`
 Asynchronously deletes items, filtered by a function if provided.
 
 ## License
