@@ -18,7 +18,7 @@ describe(`Database '${dbName}'`, () => {
 
     it('should insert items in order', async () => {
         const testDB = await Database.access(dbName, collectionName);
-        await testDB.insert(...items);
+        expect(await testDB.insert(...items)).toBe(items.length);
         const allItems = await testDB.getAll();
         expect(allItems.map(({val}) => val)).toEqual(items.map(({val}) => val));
     });
@@ -58,7 +58,7 @@ describe(`Database '${dbName}'`, () => {
     it(`should delete item: ${JSON.stringify(items[1])}`, async () => {
         const testDB = await Database.access(dbName, collectionName);
         const filterFunc = ({val}) => val === items[1].val;
-        await testDB.deleteBy(filterFunc);
+        expect(await testDB.deleteBy(filterFunc)).toBe(1);
         expect(await testDB.getAll(filterFunc)).toHaveLength(0);
     });
 
@@ -66,6 +66,16 @@ describe(`Database '${dbName}'`, () => {
         const testDB = await Database.access(dbName, collectionName);
         await testDB.deleteKey(testDB.latestKey);
         expect(await testDB.getLastItem()).toBeDefined();
+    });
+
+    it(`should be able to handle empty operations`, async () => {
+        const testDB = await Database.access(dbName, collectionName);
+        expect(await testDB.insert()).toBe(0);
+
+        const allItems = await testDB.getAll();
+        expect(allItems.length).toBeGreaterThan(0);
+        expect(await testDB.deleteBy(() => false)).toBe(0);
+        expect(await testDB.deleteBy()).toBe(allItems.length);
     });
 
     it('should keep different collections separate', async () => {

@@ -42,8 +42,10 @@ class Database {
         return this.db.put('counter', this.latestKey = newCounter);
     }
 
-    _updateLastItem() {
-        return this.getAll().then(results => +results[results.length - 1]._id).then(this._updateCounter.bind(this));
+    async _updateLastItem() {
+        const allItems = await this.getAll();
+        const newCount = allItems.length ? +allItems[allItems.length - 1]._id : INITIAL;
+        return this._updateCounter(newCount);
     }
 
     getAll(filterFunc) {
@@ -63,9 +65,12 @@ class Database {
     }
 
     async insert(...newItems) {
-        const ops = newItems.map((value, index) => ({ type: 'put', key: this.latestKey + index + 1, value }));
-        await this.db.batch(ops, JSON_ENCODING);
-        await this._updateCounter(ops[ops.length - 1].key);
+        if (newItems.length) {
+            const ops = newItems.map((value, index) => ({type: 'put', key: this.latestKey + index + 1, value}));
+            await this.db.batch(ops, JSON_ENCODING);
+            await this._updateCounter(ops[ops.length - 1].key);
+        }
+        return newItems.length;
     }
 
     async update(key, updateObj) {
@@ -78,10 +83,15 @@ class Database {
     }
 
     async deleteBy(filterFunc) {
-        const itemToDelete = await this.getAll(filterFunc);
-        const lastIDToDelete = itemToDelete[itemToDelete.length - 1]._id;
-        return this.db.batch(itemToDelete.map(({ _id }) => ({ type: 'del', key: _id })))
-            .then(result => +lastIDToDelete === this.latestKey ? this._updateLastItem() : result);
+        const itemsToDelete = await this.getAll(filterFunc);
+        if (itemsToDelete.length) {
+            const lastIDToDelete = itemsToDelete[itemsToDelete.length - 1]._id;
+            await this.db.batch(itemsToDelete.map(({_id}) => ({type: 'del', key: _id})))
+            if (+lastIDToDelete === this.latestKey) {
+                await this._updateLastItem();
+            }
+        }
+        return itemsToDelete.length;
     }
 }
 
