@@ -7,8 +7,6 @@ A wrapper for [`level`][level] that keeps inserted items ordered.
 
 All items should be in JSON form.
 
-(Supports up to 899,999,999,999 item insertions per collection)
-
 ## Usage
 ```js 
 // create/access database
@@ -19,7 +17,7 @@ await testDB.insert({ val: 'one' }, { val: 'two' }, { val: 'three' });
 
 // get all items
 const allItems = await testDB.getAll();
-allItems.map(({ val }) => val) // ['one', 'two', 'three']
+allItems.map(({ val }) => val); // ['one', 'two', 'three']
 
 // get last item
 await testDB.getLastItem(); // { val: 'three' }
@@ -27,7 +25,7 @@ await testDB.getLastItem(); // { val: 'three' }
 // delete item: { val: 'two' }
 const filterFunc = ({ val }) => val === 'two';
 await testDB.deleteBy(filterFunc);
-await testDB.getAll(filterFunc) // []
+await testDB.getAll(filterFunc); // []
 ```    
 ## API
 

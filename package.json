@@ -1,6 +1,6 @@
 {
   "name": "level-ordered",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "description": "a wrapper for level database that keeps order",
   "main": "index.js",
   "scripts": {
@@ -14,11 +14,15 @@
     "level",
     "leveldb",
     "database",
+    "db",
+    "file based",
     "wrapper",
     "array",
     "ordered",
     "sorted",
+    "JSON",
     "getLast",
+    "last item",
     "simple",
     "nodejs"
   ],
@@ -30,6 +34,7 @@
   "homepage": "https://github.com/eranbnn/level-ordered#readme",
   "dependencies": {
     "level": "^6.0.1",
+    "lexicographic-integer-encoding": "^1.0.1",
     "subleveldown": "^5.0.1"
   },
   "devDependencies": {
